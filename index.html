@@ -1,0 +1,106 @@
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <title>"Counterproduction"</title>
+    <style>
+      body {
+        position: relative;
+        background: #666666;
+        padding: 0;
+        margin: 0;
+        height: 100vh;
+        overflow: hidden;
+        font-family: "Inter", "Helvetica Neue", Helvetica, sans-serif;
+        color: #FFF;
+      }
+      canvas {
+        background-color: white;
+      }
+      h1 {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        left: 50%;
+        top: 50%;
+        z-index: -1;
+        font-size: 6em;
+        margin: 0;
+      }
+      #map-data-wrapper {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin: 1em;
+        font-size: 1.5em;
+      }
+      #state {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 1em;
+        font-size: 2em;
+        pointer-events: none;
+      }
+      #controls {
+        position: absolute;
+        padding-left: 1em;
+        padding-top: 1em;
+        font-size: 1.5em;
+        pointer-events: none;
+      }
+      #counters-produced {
+        position: absolute;
+        top: 2.5em;
+        right: 0;
+        margin: 1em;
+        font-size: 2em;
+        pointer-events: none;
+      }
+      #startup-map {
+        position: absolute;
+        left: -99999999em;
+      }
+    </style>
+  </head>
+  <h1>Loading...</h1>
+  <div id="map-data-wrapper">
+    Map Data
+    <input type="text" id="map-data">
+  </div>
+  <div id="state"></div>
+  <div id="counters-produced"></div>
+  <div id="controls">
+    <pre>
+Controls:
+s: Save
+l: Load
+[space]: Toggle from paused to running,
+  or from editing to editing map
+e: Toggle from editing to running
+q: Rotate clockwise
+w: Rotate counterclockwise
+f: Toggle floor
+b: Toggle block
+t: Toggle between painting blocks
+  and painting tiles
+c: Clear the map
+
+Floor / Block types:
+1: Air / Air
+2: Normal / Solid
+3: Arrow / Wire
+4: Rotate CCW / Source
+5: Rotate CW / Drain
+6: Nothing / Firer
+7: Nothing / Deleter
+8: Nothing / Mover
+Map Editing only:
+9: Layout / Wall
+    </pre>
+  </div>
+  <div id="startup-map">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</div>
+  <script type="module">
+    import init from './target/wasm.js'
+    init()
+  </script>
+</html>
